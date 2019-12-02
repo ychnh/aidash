@@ -42,6 +42,7 @@ class ImageUpdater(Updater):
         else:
             img = Image.new('RGB', (100, 100))
             bimg = ImageUpdater.image_to_byte_array(img)
+            
         
         self.widget.value = bimg
         
@@ -94,36 +95,3 @@ class GraphUpdater(Updater):
             plt.plot( X, Y) 
             plt.title(label)
             plt.show(self.fig)
-
-
-class PlotUpdater(Updater):
-    
-    def __init__(self, path, widget, ylim = None):
-        super().__init__(path, widget)
-        #self.fig, self.axes = plt.subplots()
-    
-    def need_update(self):
-        return True
-    def update(self):
-        imglist = ImageUpdater._getfiles(self.path, True)
-        if len(imglist) > 0:
-            newest_filepath = imglist[0]
-            label = newest_filepath
-            path = join(self.path, newest_filepath)
-            img = Image.open(path)
-        else:
-            label = 'noimg'
-            img = Image.new('RGB', (100, 100))
-
-        with self.widget:
-            clear_output(wait=True)
-            plt.title(label)
-            plt.imshow(img)
-            plt.show()
- 
-    @staticmethod
-    def _getfiles(dirpath, newest_first=True):
-        a = [s for s in os.listdir(dirpath)
-             if os.path.isfile(os.path.join(dirpath, s))]
-        a.sort(key=lambda s: os.path.getmtime(os.path.join(dirpath, s)), reverse=newest_first)
-        return a
